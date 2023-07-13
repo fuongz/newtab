@@ -5,8 +5,6 @@ import type { UserConfig } from 'vite'
 import { defineConfig } from 'vite'
 import Vue from '@vitejs/plugin-vue'
 import Icons from 'unplugin-icons/vite'
-import IconsResolver from 'unplugin-icons/resolver'
-import Components from 'unplugin-vue-components/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import UnoCSS from 'unocss/vite'
 import { isDev, port, r } from './scripts/utils'
@@ -34,19 +32,6 @@ export const sharedConfig: UserConfig = {
         },
       ],
       dts: r('src/auto-imports.d.ts'),
-    }),
-
-    // https://github.com/antfu/unplugin-vue-components
-    Components({
-      dirs: [r('src/components')],
-      // generate `components.d.ts` for ts support with Volar
-      dts: r('src/components.d.ts'),
-      resolvers: [
-        // auto import icons
-        IconsResolver({
-          componentPrefix: '',
-        }),
-      ],
     }),
 
     // https://github.com/antfu/unplugin-icons
@@ -91,8 +76,6 @@ export default defineConfig(({ command }) => ({
     },
     rollupOptions: {
       input: {
-        options: r('src/options/index.html'),
-        popup: r('src/popup/index.html'),
         newtab: r('src/newtab/index.html'),
       },
     },
