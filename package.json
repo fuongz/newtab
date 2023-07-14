@@ -1,7 +1,7 @@
 {
   "name": "just-random-quote-tab",
   "displayName": "Just Random Quote Tab",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "packageManager": "pnpm@8.3.1",
   "description": "Nothing. Just Random Quote Tab.",
@@ -72,6 +72,8 @@
     "*": "eslint --fix"
   },
   "dependencies": {
-    "swrv": "^1.0.4"
+    "@tanstack/vue-query": "^4.29.23",
+    "swrv": "^1.0.4",
+    "vue-multiselect": "^2.1.7"
   }
 }

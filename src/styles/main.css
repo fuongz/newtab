@@ -1,5 +1,5 @@
 body {
-  font-family: 'Inter', serif;
+  font-family: 'Proza Libre', serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-feature-settings: normal;
@@ -12,4 +12,34 @@ body,
 #app {
   margin: 0;
   padding: 0;
+}
+
+.popup-wrapper {
+  background-color: #2a2b2d;
+  @apply text-zinc-100 p-4 w-[400px];
+}
+
+/* Form */
+.form-control {
+  @apply font-mono;
+}
+
+.form-control label {
+  @apply mb-1.5 font-medium block text-white;
+}
+
+.form-control select {
+  @apply bg-zinc-700 text-white block w-full p-2 rounded focus:outline-none;
+}
+
+.button {
+  @apply px-4 font-mono transition font-semibold py-2 bg-zinc-100 text-zinc-900 rounded ml-auto block;
+}
+
+.button:hover {
+  @apply bg-zinc-300 transition;
+}
+
+.button:disabled {
+  @apply bg-zinc-500 cursor-wait;
 }
