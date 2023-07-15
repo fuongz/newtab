@@ -5,7 +5,9 @@ const keys: any = { 37: 1, 38: 1, 39: 1, 40: 1 }
 const supportsPassive = ref(false)
 const modalSettingStatus = ref(false)
 const data = ref<{ content: string; author: string } | null>(null)
-const cached = useStorageLocal('fuongz_just_random_quote', JSON.stringify({}))
+const cached = useStorageLocal('fuongz_just_random_quote', JSON.stringify({}), {
+  mergeDefaults: true,
+})
 
 const preventDefault = (e: any) => {
   e.preventDefault()
@@ -30,6 +32,7 @@ const fetchQuote = async (newVal: any) => {
     if (cachedParsed && cachedParsed.tagsData) url = `${url}?=${cachedParsed.tagsData}`
   }
   const res = await fetcher(url)
+
   // eslint-disable-next-line antfu/if-newline
   if (res) data.value = res
 }
@@ -37,6 +40,7 @@ const fetchQuote = async (newVal: any) => {
 const handleOnSubmit = async (rawData: string) => {
   modalSettingStatus.value = false
   cached.value = rawData
+  await fetchQuote(rawData)
 }
 
 const handleChangeStatus = () => {
@@ -69,9 +73,10 @@ onMounted(async () => {
   window.addEventListener('keydown', preventDefaultForScrollKeys, false)
 })
 
-watch(cached, async (newVal, _oldVal) => {
-  // eslint-disable-next-line antfu/if-newline
-  if (newVal) await fetchQuote(newVal)
+watchEffect(async () => {
+  setTimeout(async () => {
+    await fetchQuote(cached.value)
+  }, 10)
 })
 </script>
 
