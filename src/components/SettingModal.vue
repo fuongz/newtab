@@ -1,16 +1,34 @@
 <script setup lang="ts">
 import useSWRV from 'swrv'
-import { computed, reactive, ref, watchEffect } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { fetcher } from '../logic/fetcher'
-import { useStorageLocal } from '../composables/useStorageLocal'
 
-const props = defineProps(['status'])
+const props = defineProps(['status', 'data'])
 const emit = defineEmits(['changeStatus', 'onSubmit'])
-const cached = useStorageLocal('fuongz_just_random_quote', JSON.stringify({}))
+
+const fontFamilies: { label: string; value: string }[] = [
+  {
+    label: 'Playfair Display',
+    value: 'playfair-display',
+  },
+  {
+    label: 'Montserrat',
+    value: 'montserrat',
+  },
+  {
+    label: 'Proza Libre',
+    value: 'proza-libre',
+  },
+  {
+    label: 'Rubik',
+    value: 'rubik',
+  },
+]
 
 const isLoading = ref(false)
-const formData = reactive({
+const formData: any = reactive({
   tagsData: '',
+  fontFamily: '',
 })
 
 const { data: tags } = useSWRV('https://api.quotable.io/tags', fetcher, {
@@ -26,21 +44,19 @@ const status = computed({
   },
 })
 
-const handleClick = () => {
+const handleOnSubmit = () => {
   isLoading.value = true
-  emit('onSubmit', JSON.stringify(formData))
+  emit('onSubmit', formData)
   setTimeout(() => {
     isLoading.value = false
-    status.value = false
-  }, 100)
+  }, 10)
 }
 
-watchEffect(() => {
-  if (cached) {
-    const cachedParsed = JSON.parse(cached.value)
+watch(props, (newVal) => {
+  Object.keys(newVal.data).forEach((key: string) => {
     // eslint-disable-next-line antfu/if-newline
-    if (cachedParsed && cachedParsed.tagsData) formData.tagsData = cachedParsed.tagsData
-  }
+    if (typeof formData[key] !== 'undefined') formData[key] = newVal.data[key]
+  })
 })
 </script>
 
@@ -54,14 +70,26 @@ watchEffect(() => {
             <div>
               <div class="mt-3 text-center sm:mt-0 sm:text-left">
                 <h3 id="modal-title" class="text-base font-semibold leading-6 text-zinc-100">Settings</h3>
-                <div v-if="tags" class="form-control mt-4">
-                  <label for="tags">Quote category:</label>
-                  <select id="tags" v-model="formData.tagsData" name="tags">
-                    <option value="" selected>Select category</option>
-                    <option v-for="tag in tags" :key="tag._id" :value="tag.slug">
-                      {{ tag.name }}
-                    </option>
-                  </select>
+                <div v-if="tags">
+                  <div class="form-control mt-4">
+                    <label for="tags">Quote category:</label>
+                    <select id="tags" v-model="formData.tagsData" name="tags">
+                      <option value="" selected>Select category</option>
+                      <option v-for="tag in tags" :key="tag._id" :value="tag.slug">
+                        {{ tag.name }}
+                      </option>
+                    </select>
+                  </div>
+
+                  <div v-if="fontFamilies" class="form-control mt-4">
+                    <label for="tags">Font Family:</label>
+                    <select id="tags" v-model="formData.fontFamily" name="fontFamily">
+                      <option value="" selected>Select font</option>
+                      <option v-for="font in fontFamilies" :key="font.value" :value="font.value">
+                        {{ font.label }}
+                      </option>
+                    </select>
+                  </div>
                 </div>
                 <div v-else class="text-zinc-500 italic">Loading...</div>
               </div>
@@ -72,7 +100,7 @@ watchEffect(() => {
               :disabled="isLoading"
               type="button"
               class="inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-zinc-900 shadow-sm hover:bg-zinc-200 transition hover:transition sm:ml-3 sm:w-auto"
-              @click="handleClick()"
+              @click="handleOnSubmit()"
             >
               <svg v-if="isLoading" class="animate-spin -ml-1 mr-3 h-4 w-4 text-zinc-900" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />

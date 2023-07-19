@@ -1,24 +1,16 @@
 <script setup lang="ts">
 import { useStorageLocal } from '~/composables/useStorageLocal'
+import useUI from '~/composables/useUI'
 import { fetcher } from '~/logic/fetcher'
-const keys: any = { 37: 1, 38: 1, 39: 1, 40: 1 }
-const supportsPassive = ref(false)
+
 const modalSettingStatus = ref(false)
 const data = ref<{ content: string; author: string } | null>(null)
 const cached = useStorageLocal('fuongz_just_random_quote', JSON.stringify({}), {
   mergeDefaults: true,
 })
 
-const preventDefault = (e: any) => {
-  e.preventDefault()
-}
-
-const preventDefaultForScrollKeys = (e: any) => {
-  if (keys[e.keyCode]) {
-    preventDefault(e)
-    return false
-  }
-}
+// Use UI
+useUI()
 
 const handleOpenSetting = () => {
   modalSettingStatus.value = true
@@ -32,46 +24,24 @@ const fetchQuote = async (newVal: any) => {
     if (cachedParsed && cachedParsed.tagsData) url = `${url}?=${cachedParsed.tagsData}`
   }
   const res = await fetcher(url)
-
   // eslint-disable-next-line antfu/if-newline
   if (res) data.value = res
 }
 
-const handleOnSubmit = async (rawData: string) => {
+const cachedParsed = computed(() => {
+  return JSON.parse(cached.value)
+})
+
+const handleOnSubmit = async (data: { fontFamily: string; tagsData: string }) => {
+  // eslint-disable-next-line antfu/if-newline
+  if (data.tagsData && data.tagsData !== cachedParsed.value.tagsData) await fetchQuote(JSON.stringify(data))
+  cached.value = JSON.stringify(data)
   modalSettingStatus.value = false
-  cached.value = rawData
-  await fetchQuote(rawData)
 }
 
 const handleChangeStatus = () => {
   modalSettingStatus.value = false
 }
-
-onMounted(async () => {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-extra-semi
-    ;(window as any).addEventListener(
-      'test',
-      null,
-      Object.defineProperty({}, 'passive', {
-        get() {
-          supportsPassive.value = true
-        },
-        // eslint-disable-next-line @typescript-eslint/comma-dangle
-      })
-    )
-    // eslint-disable-next-line @typescript-eslint/brace-style
-  } catch (e) {}
-
-  const wheelOpt = supportsPassive ? { passive: false } : false
-  const wheelEvent = 'onwheel' in document.createElement('div') ? 'wheel' : 'mousewheel'
-
-  // call this to Disable
-  window.addEventListener('DOMMouseScroll', preventDefault, false) // older FF
-  window.addEventListener(wheelEvent, preventDefault, wheelOpt) // modern desktop
-  window.addEventListener('touchmove', preventDefault, wheelOpt) // mobile
-  window.addEventListener('keydown', preventDefaultForScrollKeys, false)
-})
 
 watchEffect(async () => {
   setTimeout(async () => {
@@ -85,7 +55,7 @@ watchEffect(async () => {
     <div class="text-white flex relative justify-center items-center h-screen overflow-hidden max-w-[1000px] mx-auto">
       <blockquote>
         <!-- eslint-disable-next-line vue/singleline-html-element-content-newline -->
-        <h1 v-if="data" class="text-5xl leading-snug font-semibold">“ {{ data.content }} ”</h1>
+        <h1 v-if="data" class="text-5xl leading-snug font-normal whitespace-break-spaces" :class="[`font-${cachedParsed.fontFamily}`]">“ {{ data.content }} ”</h1>
         <!-- eslint-disable-next-line vue/singleline-html-element-content-newline -->
         <h3 v-if="data" class="mt-6 text-3xl text-zinc-500 italic font-serif">- {{ data.author }}</h3>
       </blockquote>
@@ -111,5 +81,5 @@ watchEffect(async () => {
   </main>
 
   <!-- eslint-disable-next-line vue/v-on-event-hyphenation -->
-  <SettingModal :status="modalSettingStatus" @change-status="handleChangeStatus" @on-submit="handleOnSubmit" />
+  <SettingModal :status="modalSettingStatus" :data="cachedParsed" @change-status="handleChangeStatus" @on-submit="handleOnSubmit" />
 </template>

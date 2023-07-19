@@ -1,5 +1,5 @@
 body {
-  font-family: 'Proza Libre', serif;
+  font-family: 'Proza Libre', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-feature-settings: normal;
@@ -14,6 +14,24 @@ body,
   padding: 0;
 }
 
+/* Font Families */
+.font-playfair-display {
+  font-family: 'Playfair Display';
+}
+
+.font-montserrat {
+  font-family: 'Montserrat';
+}
+
+.font-proza-libre {
+  font-family: 'Proza Libre';
+}
+
+.font-rubik {
+  font-family: 'Rubik';
+}
+
+/* Popup */
 .popup-wrapper {
   background-color: #2a2b2d;
   @apply text-zinc-100 p-4 w-[400px];
