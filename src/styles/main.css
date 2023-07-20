@@ -31,6 +31,14 @@ body,
   font-family: 'Rubik';
 }
 
+.font-roboto {
+  font-family: 'Roboto';
+}
+
+.font-inter {
+  font-family: 'Inter';
+}
+
 /* Popup */
 .popup-wrapper {
   background-color: #2a2b2d;
