@@ -51,11 +51,11 @@ body,
 }
 
 .form-control label {
-  @apply mb-1.5 font-medium block text-white;
+  @apply mb-1.5 font-medium block text-zinc-900;
 }
 
 .form-control select {
-  @apply bg-zinc-700 text-white block w-full p-2 rounded focus:outline-none;
+  @apply bg-zinc-100 text-zinc-900 block w-full p-2 rounded focus:outline-none;
 }
 
 .button {
