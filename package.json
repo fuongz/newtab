@@ -33,6 +33,7 @@
     "@playwright/test": "^1.36.1",
     "@types/fs-extra": "^11.0.1",
     "@types/node": "^20.4.2",
+    "@types/vue-select": "^3.16.2",
     "@types/webextension-polyfill": "^0.10.1",
     "@typescript-eslint/eslint-plugin": "^6.1.0",
     "@unocss/reset": "^0.53.5",
@@ -72,8 +73,10 @@
     "*": "eslint --fix"
   },
   "dependencies": {
+    "@popperjs/core": "^2.11.8",
     "@tanstack/vue-query": "^4.29.25",
     "swrv": "^1.0.4",
-    "vue-multiselect": "^2.1.7"
+    "vue-multiselect": "^2.1.7",
+    "vue-select": "4.0.0-beta.6"
   }
 }
