@@ -26,20 +26,27 @@
     "postinstall": "simple-git-hooks",
     "typecheck": "tsc --noEmit"
   },
+  "dependencies": {
+    "@popperjs/core": "^2.11.8",
+    "@tanstack/vue-query": "^4.32.0",
+    "swrv": "^1.0.4",
+    "vue-multiselect": "^2.1.7",
+    "vue-select": "3.20.2"
+  },
   "devDependencies": {
     "@antfu/eslint-config": "^0.39.8",
     "@ffflorian/jszip-cli": "^3.4.1",
-    "@iconify/json": "^2.2.93",
-    "@playwright/test": "^1.36.1",
+    "@iconify/json": "^2.2.94",
+    "@playwright/test": "^1.36.2",
     "@types/fs-extra": "^11.0.1",
-    "@types/node": "^20.4.2",
+    "@types/node": "^20.4.4",
     "@types/vue-select": "^3.16.2",
     "@types/webextension-polyfill": "^0.10.1",
-    "@typescript-eslint/eslint-plugin": "^6.1.0",
-    "@unocss/reset": "^0.53.5",
+    "@typescript-eslint/eslint-plugin": "^6.2.0",
+    "@unocss/reset": "^0.53.6",
     "@vitejs/plugin-vue": "^4.2.3",
     "@vue/compiler-sfc": "^3.3.4",
-    "@vue/test-utils": "^2.4.0",
+    "@vue/test-utils": "^2.4.1",
     "@vueuse/core": "^10.2.1",
     "chokidar": "^3.5.3",
     "cross-env": "^7.0.3",
@@ -52,13 +59,13 @@
     "lint-staged": "^13.2.3",
     "npm-run-all": "^4.1.5",
     "rimraf": "^5.0.1",
-    "simple-git-hooks": "^2.8.1",
+    "simple-git-hooks": "^2.9.0",
     "typescript": "^5.1.6",
-    "unocss": "^0.53.5",
+    "unocss": "^0.53.6",
     "unplugin-auto-import": "^0.16.6",
     "unplugin-icons": "^0.16.5",
     "unplugin-vue-components": "^0.25.1",
-    "vite": "^4.4.5",
+    "vite": "^4.4.7",
     "vitest": "^0.33.0",
     "vue": "^3.3.4",
     "vue-demi": "^0.14.5",
@@ -71,12 +78,5 @@
   },
   "lint-staged": {
     "*": "eslint --fix"
-  },
-  "dependencies": {
-    "@popperjs/core": "^2.11.8",
-    "@tanstack/vue-query": "^4.29.25",
-    "swrv": "^1.0.4",
-    "vue-multiselect": "^2.1.7",
-    "vue-select": "4.0.0-beta.6"
   }
 }
