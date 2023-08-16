@@ -26,7 +26,7 @@ export async function getManifest() {
       48: './assets/icon-512.png',
       128: './assets/icon-512.png',
     },
-    permissions: ['storage', 'https://api.quotable.io/random'],
+    permissions: ['storage', 'https://gist.githubusercontent.com/*'],
     content_security_policy: {
       extension_pages: isDev
         ? // this is required on dev for Vite script to load

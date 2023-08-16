@@ -1,27 +1,17 @@
 <script setup lang="ts">
-import useSWRV from 'swrv'
-import VueSelect from 'vue-select'
 import { useStorageLocal } from '~/composables/useStorageLocal'
 import useUI from '~/composables/useUI'
 import { fetcher } from '~/logic/fetcher'
 
-// type ConfigProps = 'bgColor'
-const data = ref<{ content: string; author: string } | null>(null)
-const cached = useStorageLocal('fuongz_just_random_quote5', JSON.stringify({}), {
+const data = ref<{ text: string; author: string } | null>(null)
+const cached = useStorageLocal('fuongz_just_random_quote', JSON.stringify({}), {
   mergeDefaults: true,
 })
 const showSetting = ref(false)
 const config = reactive<any>({
   bgColor: '#18181b',
-  quoteFontFamily: {
-    label: 'Montserrat',
-    value: 'montserrat',
-  },
-  authorFontFamily: {
-    label: 'Montserrat',
-    value: 'montserrat',
-  },
-  category: { name: 'All', _id: null, slug: null },
+  quoteFontFamily: 'playfair-display',
+  authorFontFamily: 'montserrat',
 })
 
 // Local data
@@ -54,26 +44,20 @@ const fontFamilies: { label: string; value: string | null }[] = [
 ]
 
 // Use UI
-const { lightOrDark, withPopper } = useUI()
-
-const { data: tags } = useSWRV('https://api.quotable.io/tags', fetcher, {
-  revalidateOnFocus: false,
-})
+const { lightOrDark } = useUI()
 
 function handleOpenQuickSetting() {
   showSetting.value = !showSetting.value
 }
 
-async function fetchQuote(newVal: any = null) {
-  let url = 'https://api.quotable.io/random'
-  if (newVal) {
-    const cachedParsed = JSON.parse(newVal)
-    // eslint-disable-next-line antfu/if-newline
-    if (cachedParsed && cachedParsed.tagsData) url = `${url}?=${cachedParsed.tagsData}`
-  }
+function getRandomQuote(quotes: { author: string; text: string }[]) {
+  return quotes[Math.floor(Math.random() * quotes.length)]
+}
+
+async function fetchQuote(_newVal: any = null) {
+  const url = 'https://gist.githubusercontent.com/fuongz/dc7bdaffc9181e7ef0b176f1f025ab22/raw/0d62f619d5ff9457e8e9f710c9fdefd463a0ee7c/quotes.json'
   const res = await fetcher(url)
-  // eslint-disable-next-line antfu/if-newline
-  if (res) data.value = res
+  if (res) data.value = getRandomQuote(res)
 }
 
 const cachedParsed: any = computed(() => {
@@ -92,7 +76,6 @@ watch(cached, async (newVal, oldVal) => {
 
 onMounted(async () => {
   setTimeout(async () => {
-    // eslint-disable-next-line antfu/if-newline
     if (cached.value === '{}') await fetchQuote()
   }, 1)
 })
@@ -102,17 +85,8 @@ async function handleUpdateSetting(key: any, value: string) {
     ...cachedParsed.value,
     [key]: value,
   }
-  // eslint-disable-next-line no-console
-  console.log(data)
-
-  // eslint-disable-next-line antfu/if-newline
   if (data) config[key] = value
-
-  // eslint-disable-next-line antfu/if-newline
   if (data) cached.value = JSON.stringify(data)
-
-  // eslint-disable-next-line antfu/if-newline
-  if (key === 'category') await fetchQuote(cached.value)
 }
 </script>
 
@@ -120,16 +94,14 @@ async function handleUpdateSetting(key: any, value: string) {
   <main class="relative transition" :style="{ backgroundColor: config.bgColor }">
     <div class="text-white flex relative justify-center items-center h-screen overflow-hidden max-w-[1024px] mx-auto">
       <blockquote>
-        <!-- eslint-disable-next-line vue/singleline-html-element-content-newline -->
         <h1
           v-if="data"
           class="text-5xl leading-snug font-normal whitespace-break-spaces"
-          :class="[`font-${config.quoteFontFamily.value}`, [lightOrDark((config.bgColor as string)) === 'dark' ? 'text-white' : 'text-zinc-900']]"
+          :class="[`font-${config.quoteFontFamily}`, [lightOrDark((config.bgColor as string)) === 'dark' ? 'text-white' : 'text-zinc-900']]"
         >
-          “ {{ data.content }} ”
+          “ {{ data.text }} ”
         </h1>
-        <!-- eslint-disable-next-line vue/singleline-html-element-content-newline -->
-        <h3 v-if="data" :class="[`font-${config.authorFontFamily.value}`, lightOrDark((config.bgColor as string)) === 'dark' ? 'text-zinc-300' : 'text-zinc-900']" class="mt-6 text-xl">
+        <h3 v-if="data" :class="[`font-${config.authorFontFamily}`, lightOrDark((config.bgColor as string)) === 'dark' ? 'text-zinc-300' : 'text-zinc-900']" class="mt-6 text-xl">
           - {{ data.author }}
         </h3>
       </blockquote>
@@ -170,24 +142,14 @@ async function handleUpdateSetting(key: any, value: string) {
             </div>
 
             <div>
-              <div class="form-control mt-4">
-                <h4 class="mb-1 font-medium font-montserrat">Select category</h4>
-                <div class="bg-zinc-100 rounded">
-                  <VueSelect
-                    v-model="config.category"
-                    label="name"
-                    :options="[{ name: 'All', _id: null, slug: null }, ...tags]"
-                    @option:selected="(value: any) => handleUpdateSetting('category', value)"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div>
               <div v-if="fontFamilies" class="form-control mt-4">
                 <h4 class="mb-1 font-medium font-montserrat">Quote font</h4>
                 <div class="bg-zinc-100 rounded">
-                  <VueSelect v-model="config.quoteFontFamily" :options="fontFamilies" @option:selected="(value: any) => handleUpdateSetting('quoteFontFamily', value)" />
+                  <select @change="(e: any) => handleUpdateSetting('quoteFontFamily', e.target.value)">
+                    <option v-for="font in fontFamilies" :key="`quote-font-${font.value}`" :value="font.value">
+                      {{ font.label }}
+                    </option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -196,13 +158,11 @@ async function handleUpdateSetting(key: any, value: string) {
               <div v-if="fontFamilies" class="form-control mt-4">
                 <h4 class="mb-1 font-medium font-montserrat">Author font</h4>
                 <div class="bg-zinc-100 rounded">
-                  <VueSelect
-                    v-model="config.authorFontFamily"
-                    :calculate-position="withPopper"
-                    :append-to-body="true"
-                    :options="fontFamilies"
-                    @option:selected="(value: any) => handleUpdateSetting('authorFontFamily', value)"
-                  />
+                  <select @change="(e: any) => handleUpdateSetting('authorFontFamily', e.target.value)">
+                    <option v-for="font in fontFamilies" :key="`author-font-${font.value}`" :value="font.value">
+                      {{ font.label }}
+                    </option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -212,7 +172,6 @@ async function handleUpdateSetting(key: any, value: string) {
     </Teleport>
 
     <div class="flex gap-4 absolute bottom-4 text-right right-4">
-      <!-- eslint-disable-next-line vue/singleline-html-element-content-newline -->
       <div :class="lightOrDark((config.bgColor as string)) === 'dark' ? 'text-zinc-300' : 'text-zinc-500'" class="text-xs font-mono">
         Made with ❤️ by<a href="https://github.com/fuongz" class="transition hover:transition"> fuongz </a>
       </div>
