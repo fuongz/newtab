@@ -1,7 +1,7 @@
 {
   "name": "your-newtab",
   "displayName": "Your NewTab",
-  "version": "0.0.7",
+  "version": "1.0.0",
   "private": true,
   "description": "Nothing. Just Random Quote Tab.",
   "scripts": {
@@ -23,7 +23,10 @@
     "test": "vitest test",
     "test:e2e": "playwright test",
     "postinstall": "simple-git-hooks",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "release": "esno scripts/release.ts",
+    "release:minor": "esno scripts/release.ts minor",
+    "release:major": "esno scripts/release.ts major"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^7.6.1",
