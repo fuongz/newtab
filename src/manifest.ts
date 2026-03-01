@@ -14,18 +14,18 @@ export async function getManifest() {
     version: pkg.version,
     description: pkg.description,
     chrome_url_overrides: {
-      newtab: './dist/newtab/index.html',
+      newtab: 'dist/newtab/index.html',
     },
     action: {
-      default_icon: './assets/icon-512.png',
+      default_icon: 'assets/icon-128.png',
     },
     icons: {
-      16: './assets/icon-512.png',
-      48: './assets/icon-512.png',
-      128: './assets/icon-512.png',
+      16: 'assets/icon-16.png',
+      48: 'assets/icon-48.png',
+      128: 'assets/icon-128.png',
     },
     permissions: ['storage'],
-    host_permissions: ['https://gist.githubusercontent.com/*'],
+    host_permissions: ['https://gist.githubusercontent.com/fuongz/dc7bdaffc9181e7ef0b176f1f025ab22/*'],
     content_security_policy: {
       extension_pages: isDev
         ? `script-src \'self\' http://localhost:${port}; object-src \'self\'`
