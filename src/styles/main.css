@@ -24,6 +24,10 @@ body,
   font-family: 'Playfair Display';
 }
 
+.font-space-grotesk {
+  font-family: 'Space Grotesk';
+}
+
 .font-montserrat {
   font-family: 'Montserrat';
 }
@@ -40,8 +44,24 @@ body,
   font-family: 'Roboto';
 }
 
+.font-oswald {
+  font-family: 'Oswald';
+}
+
+.font-dm-sans {
+  font-family: 'DM Sans';
+}
+
 .font-inter {
   font-family: 'Inter';
+}
+
+.font-numans {
+  font-family: 'Numans';
+}
+
+.font-be-vietnam-pro {
+  font-family: 'Be Vietnam Pro';
 }
 
 /* Popup */

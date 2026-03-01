@@ -1,8 +1,9 @@
+import type { BrowserContext } from '@playwright/test'
+import type { Manifest } from 'webextension-polyfill'
 import path from 'node:path'
 import { setTimeout as sleep } from 'node:timers/promises'
+import { test as base, chromium } from '@playwright/test'
 import fs from 'fs-extra'
-import { type BrowserContext, test as base, chromium } from '@playwright/test'
-import type { Manifest } from 'webextension-polyfill'
 
 export { name } from '../package.json'
 
@@ -43,6 +44,6 @@ export function isDevArtifact() {
   const manifest: Manifest.WebExtensionManifest = fs.readJsonSync(path.resolve(extensionPath, 'manifest.json'))
   return Boolean(
     typeof manifest.content_security_policy === 'object'
-      && manifest.content_security_policy.extension_pages?.includes('localhost'),
+    && manifest.content_security_policy.extension_pages?.includes('localhost'),
   )
 }

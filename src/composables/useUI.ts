@@ -26,7 +26,8 @@ export default function useUI() {
       r = color[1]
       g = color[2]
       b = color[3]
-    } else {
+    }
+    else {
       // If RGB --> Convert it to HEX: http://gist.github.com/983661
       color = +`0x${color?.slice(1).replace(color.length < 5 && /./g, '$&$&')}`
 
@@ -53,9 +54,10 @@ export default function useUI() {
           get() {
             supportsPassive.value = true
           },
-        })
+        }),
       )
-    } catch (e) {}
+    }
+    catch {}
 
     const wheelOpt = supportsPassive ? { passive: false } : false
     const wheelEvent = 'onwheel' in document.createElement('div') ? 'wheel' : 'mousewheel'

@@ -1,16 +1,16 @@
 /// <reference types="vitest" />
 
-import { dirname, relative } from 'node:path'
 import type { UserConfig } from 'vite'
-import { defineConfig } from 'vite'
+import { dirname, relative } from 'node:path'
 import Vue from '@vitejs/plugin-vue'
-import Icons from 'unplugin-icons/vite'
-import AutoImport from 'unplugin-auto-import/vite'
 import UnoCSS from 'unocss/vite'
+import AutoImport from 'unplugin-auto-import/vite'
 import IconsResolver from 'unplugin-icons/resolver'
+import Icons from 'unplugin-icons/vite'
 import Components from 'unplugin-vue-components/vite'
-import { isDev, port, r } from './scripts/utils'
+import { defineConfig } from 'vite'
 import packageJson from './package.json'
+import { isDev, port, r } from './scripts/utils'
 
 export const sharedConfig: UserConfig = {
   root: r('src'),
@@ -66,7 +66,6 @@ export const sharedConfig: UserConfig = {
   ],
   optimizeDeps: {
     include: ['vue', '@vueuse/core', 'webextension-polyfill'],
-    exclude: ['vue-demi'],
   },
 }
 
@@ -78,16 +77,13 @@ export default defineConfig(({ command }) => ({
     hmr: {
       host: 'localhost',
     },
+    cors: true,
   },
   build: {
     watch: isDev ? {} : undefined,
     outDir: r('extension/dist'),
     emptyOutDir: false,
     sourcemap: isDev ? 'inline' : false,
-    // https://developer.chrome.com/docs/webstore/program_policies/#:~:text=Code%20Readability%20Requirements
-    terserOptions: {
-      mangle: false,
-    },
     rollupOptions: {
       input: {
         newtab: r('src/newtab/index.html'),
