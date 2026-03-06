@@ -1,7 +1,7 @@
 {
   "name": "your-newtab",
   "displayName": "Your NewTab",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Nothing. Just Random Quote Tab.",
   "scripts": {
