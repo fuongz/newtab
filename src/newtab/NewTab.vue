@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onClickOutside } from '@vueuse/core'
+import quotesData from '~/assets/quotes.json'
 import useUI from '~/composables/useUI'
 import { useWebExtensionStorage } from '~/composables/useWebExtensionStorage'
-import { fetcher } from '~/logic/fetcher'
 
 interface Config {
   bgColor: string
@@ -10,7 +10,11 @@ interface Config {
   authorFontFamily: string
 }
 
-const quote = ref<{ text: string, author: string } | null>(null)
+function getRandomQuote(quotes: { author: string, text: string }[]) {
+  return quotes[Math.floor(Math.random() * quotes.length)]
+}
+
+const quote = ref(getRandomQuote(quotesData as { author: string, text: string }[]))
 const showSetting = ref(false)
 
 const { data: config, dataReady } = useWebExtensionStorage<Config>('fuongz_just_random_quote', {
@@ -22,6 +26,7 @@ const { data: config, dataReady } = useWebExtensionStorage<Config>('fuongz_just_
 // Local data
 const colors = ['#fff', '#18181b', '#1e3a8a', '#312e81', '#166534', '#7f1d1d']
 const fontFamilies: { label: string, value: string }[] = [
+  { label: 'OS Default', value: 'sans' },
   { label: 'Playfair Display', value: 'playfair-display' },
   { label: 'Space Grotesk', value: 'space-grotesk' },
   { label: 'Montserrat', value: 'montserrat' },
@@ -52,7 +57,7 @@ const fontGoogleMap: Record<string, string> = {
 const loadedFonts = new Set<string>()
 
 function loadFont(fontValue: string) {
-  if (loadedFonts.has(fontValue) || !fontGoogleMap[fontValue]) return
+  if (fontValue === 'sans' || loadedFonts.has(fontValue) || !fontGoogleMap[fontValue]) return
   loadedFonts.add(fontValue)
   const link = document.createElement('link')
   link.rel = 'stylesheet'
@@ -82,14 +87,8 @@ function handleOpenQuickSetting() {
   showSetting.value = !showSetting.value
 }
 
-function getRandomQuote(quotes: { author: string, text: string }[]) {
-  return quotes[Math.floor(Math.random() * quotes.length)]
-}
-
-async function fetchQuote() {
-  const url = 'https://gist.githubusercontent.com/fuongz/dc7bdaffc9181e7ef0b176f1f025ab22/raw/0d62f619d5ff9457e8e9f710c9fdefd463a0ee7c/quotes.json'
-  const res = await fetcher(url)
-  if (res) quote.value = getRandomQuote(res)
+function fetchQuote() {
+  quote.value = getRandomQuote(quotesData as { author: string, text: string }[])
 }
 
 function handleUpdateSetting(key: keyof Config, value: string) {
@@ -120,7 +119,7 @@ onMounted(async () => {
   await dataReady
   loadFont(config.value.quoteFontFamily)
   loadFont(config.value.authorFontFamily)
-  await fetchQuote()
+  fetchQuote()
   if (config.value && !colors.includes(config.value.bgColor)) {
     customColor.value = config.value.bgColor
   }
@@ -187,11 +186,11 @@ onMounted(async () => {
 
     <Teleport to="#modal">
       <Transition name="pop" appear>
-        <div v-if="showSetting" ref="dialogRef" role="dialog" class="transform-none absolute bottom-12 left-4 bg-zinc-200 rounded font-montserrat w-[300px]">
+        <div v-if="showSetting" ref="dialogRef" role="dialog" class="transform-none absolute bottom-12 left-4 bg-zinc-200 rounded font-sans w-[300px]">
           <h3 class="font-semibold px-4 py-2 border-b border-zinc-300">Settings</h3>
           <div class="space-y-2 p-4">
             <div>
-              <h4 class="mb-1 font-medium font-montserrat">Background Color</h4>
+              <h4 class="mb-1 font-medium font-sans">Background Color</h4>
               <div class="flex flex-wrap gap-1">
                 <div
                   v-for="vcolor in colors"
@@ -227,9 +226,9 @@ onMounted(async () => {
 
             <div>
               <div class="form-control mt-4">
-                <h4 class="mb-1 font-medium font-montserrat">Quote font</h4>
+                <h4 class="mb-1 font-medium font-sans">Quote font</h4>
                 <div class="bg-zinc-100 rounded">
-                  <select @change="(e: any) => handleUpdateSetting('quoteFontFamily', e.target.value)">
+                  <select :value="config.quoteFontFamily" @change="(e: any) => handleUpdateSetting('quoteFontFamily', e.target.value)">
                     <option v-for="font in fontFamilies" :key="`quote-font-${font.value}`" :value="font.value">
                       {{ font.label }}
                     </option>
@@ -240,9 +239,9 @@ onMounted(async () => {
 
             <div>
               <div class="form-control mt-4">
-                <h4 class="mb-1 font-medium font-montserrat">Author font</h4>
+                <h4 class="mb-1 font-medium font-sans">Author font</h4>
                 <div class="bg-zinc-100 rounded">
-                  <select @change="(e: any) => handleUpdateSetting('authorFontFamily', e.target.value)">
+                  <select :value="config.authorFontFamily" @change="(e: any) => handleUpdateSetting('authorFontFamily', e.target.value)">
                     <option v-for="font in fontFamilies" :key="`author-font-${font.value}`" :value="font.value">
                       {{ font.label }}
                     </option>

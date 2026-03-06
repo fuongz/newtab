@@ -25,7 +25,6 @@ export async function getManifest() {
       128: 'assets/icon-128.png',
     },
     permissions: ['storage'],
-    host_permissions: ['https://gist.githubusercontent.com/fuongz/dc7bdaffc9181e7ef0b176f1f025ab22/*'],
     content_security_policy: {
       extension_pages: isDev
         ? `script-src \'self\' http://localhost:${port}; object-src \'self\'`
